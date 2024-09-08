@@ -18,12 +18,13 @@ In this sample, we use NGINX as a load balancer to manage and distribute incomin
 
 ## Table of Contents
 * **NGINX Open Source** supports four load‑balancing methods:
-  - [Round Robin](#Round Robin)
-  - [IP Hash](#IP Hash)
-  - [Least Connection Method](#Least Connection Method)
-  - [Generic Hash](#Generic Hash)
+  - [Round Robin](###Round Robin)
+  - [IP Hash](###IP Hash)
+  - [Least Connection Method](###Least Connection Method)
+  - [Generic Hash](###Generic Hash)
 * And **NGINX Plus** adds two more methods:
   - [Least Response Time Method](#Least Response Time Method)
+  - Random 
 
 ## Round Robin
 The Round Robin algorithm is a simple static load balancing approach in which requests are distributed across the servers in a sequential or rotational manner. It is easy to implement but it doesn’t consider the load already on a server so there is a risk that one of the servers receives a lot of requests and becomes overloaded.
@@ -59,7 +60,7 @@ The Weighted Round Robin algorithm is also a static load balancing approach whic
 
 By default, NGINX distributes requests among the servers in the group according to their weights using the Round Robin method. The weight parameter to the server directive sets the weight of a server; the `default` is `1`:
 
-```
+```nginx
 #install nginx Weighted Round-Robin Load Balancing
 upstream k8s_cluster {
     server 192.168.1.18:31000 weight=10; # weighted example
@@ -147,7 +148,7 @@ server {
 ## Generic Hash
 Generic Hash – The server to which a request is sent is determined from a user‑defined key which can be a text string, variable, or a combination. For example, the key may be a paired source IP address and port, or a URI as in this example:
 
-```
+```nginx
 upstream backend {
     hash $request_uri consistent;
     server backend1.example.com;
@@ -158,10 +159,25 @@ upstream backend {
 The optional consistent parameter to the hash directive enables ketama consistent‑hash load balancing. Requests are evenly distributed across all upstream servers based on the user‑defined hashed key value. If an upstream server is added to or removed from an upstream group, only a few keys are remapped which minimizes cache misses in the case of load‑balancing cache servers or other applications that accumulate state.
 
 ## Least Response Time Method
+The Least Response Time method is a dynamic load balancing approach that aims to minimize response times by directing new requests to the server with the quickest response time. 
+
+It considers the historical performance of servers to make decisions about where to route incoming requests, optimizing for faster processing.
+The dynamic aspect comes from the continuous monitoring of server response times and the adaptive nature of the algorithm to route incoming requests to the server with the historically lowest response time
+
+![leastrespondse](https://github.com/v2d27/nginx-config/raw/main/images/Least-Response.webp)
+
 **Least Time (NGINX Plus only)** – For each request, NGINX Plus selects the server with the lowest average latency and the lowest number of active connections, where the lowest average latency is calculated based on which of the following parameters to the `least_time` directive is included:
 `header` – Time to receive the first byte from the server
 `last_byte` – Time to receive the full response from the server
 `last_byte inflight` – Time to receive the full response from the server, taking into account incomplete requests
+
+```nginx
+upstream backend {
+    least_time header;
+    server backend1.example.com;
+    server backend2.example.com;
+}
+```
 
 
 ## Source
