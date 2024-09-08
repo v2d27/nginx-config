@@ -26,9 +26,12 @@ In this sample, we use NGINX as a load balancer to manage and distribute incomin
   - [Least Response Time Method](#Least Response Time Method)
 
 ## Round Robin
+The Round Robin algorithm is a simple static load balancing approach in which requests are distributed across the servers in a sequential or rotational manner. It is easy to implement but it doesn’t consider the load already on a server so there is a risk that one of the servers receives a lot of requests and becomes overloaded.
+
 ![roundrobin](https://github.com/v2d27/nginx-config/raw/main/images/Round-Robin.webp)
 Requests are distributed evenly across the servers, with server weights taken into consideration. This method is used by default (there is no directive for enabling it):
-``` yaml
+
+```nginx
 #install nginx Round-Robin Load Balancing
 upstream k8s_cluster {
     server 192.168.1.18:31000;
@@ -48,16 +51,78 @@ server {
     access_log /var/log/nginx/k8s_loadbalancer_access.log;
 }
 ```
-## IP Hash
-The server to which a request is sent is determined from the client IP address. In this case, either the first three octets of the IPv4 address or the whole IPv6 address are used to calculate the hash value. The method guarantees that requests from the same address get to the same server unless it is not available.
+
+## Weighted Round Robin
+The Weighted Round Robin algorithm is also a static load balancing approach which is much similar to the round-robin technique. The only difference is, that each of the resources in a list is provided a weighted score. Depending on the weighted score the request is distributed to these servers. 
+
+![weighted](https://github.com/v2d27/nginx-config/raw/main/images/Weighted%20Round-Robin%20Load%20Balancing.webp)
+
+By default, NGINX distributes requests among the servers in the group according to their weights using the Round Robin method. The weight parameter to the server directive sets the weight of a server; the `default` is `1`:
+
+```
+#install nginx Weighted Round-Robin Load Balancing
+upstream k8s_cluster {
+    server 192.168.1.18:31000 weight=10; # weighted example
+    server 192.168.1.19:31000 weight=15; # weighted example
+    server 192.168.1.20:31000 weight=10; # weighted example
+}
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://k8s_cluster;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    error_log /var/log/nginx/k8s_loadbalancer_error.log;
+    access_log /var/log/nginx/k8s_loadbalancer_access.log;
+}
 ```
 
+
+## IP Hash
+The Source IP Hash Load Balancing Algorithm is a method used in network load balancing to distribute incoming requests among a set of servers based on the hash value of the source IP address. This algorithm aims to ensure that requests originating from the same source IP address are consistently directed to the same server.
+
+![iphash](https://github.com/v2d27/nginx-config/raw/main/images/Source-IP-hash.webp)
+
+The server to which a request is sent is determined from the client IP address. In this case, either the first three octets of the IPv4 address or the whole IPv6 address are used to calculate the hash value. The method guarantees that requests from the same address get to the same server unless it is not available.
+```nginx
+#install nginx IP Hash Load Balancing
+upstream k8s_cluster {
+    ip_hash;
+    server 192.168.1.18:31000;
+    server 192.168.1.19:31000;
+    server 192.168.1.20:31000;
+}
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://k8s_cluster;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    error_log /var/log/nginx/k8s_loadbalancer_error.log;
+    access_log /var/log/nginx/k8s_loadbalancer_access.log;
+}
 ```
 
 ## Least Connection
+The Least Connections algorithm is a dynamic load balancing approach that assigns new requests to the server with the fewest active connections. The idea is to distribute incoming workloads in a way that minimizes the current load on each server, aiming for a balanced distribution of connections across all available resources. 
+
+- To do this load balancer needs to do some additional computing to identify the server with the least number of connections. 
+- This may be a little bit costlier compared to the round-robin method but the evaluation is based on the current load on the server. 
+
 ![leastconnection](https://github.com/v2d27/nginx-config/raw/main/images/Least-Connection.webp)
+
 A request is sent to the server with the least number of active connections, again with server weights taken into consideration:
-```shell
+```nginx
 #install nginx Least Connections Load Balancing
 upstream k8s_cluster {
     least_conn;
