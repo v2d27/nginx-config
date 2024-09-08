@@ -17,9 +17,9 @@ In this sample, we use NGINX as a load balancer to manage and distribute incomin
 4. **Scaling**: As your application scales, NGINX will automatically distribute traffic across the available instances, ensuring balanced load and improved availability.
 
 ## Table of Contents
-* **NGINX Open Source** supports five load‑balancing methods:
+* **NGINX Open Source** supports four load‑balancing methods:
   - [Round Robin](#Round-Robin)
-  - [Weighted Round Robin](#Weighted-Round-Robin)
+  - [Weighted Round Robin (Round Robin)](#Weighted-Round-Robin)
   - [IP Hash](#IP-Hash)
   - [Least Connection](#Least-Connection)
   - [Generic Hash](#Generic-Hash)
