@@ -1,7 +1,7 @@
-## NGINX Load Balancing for Kubernetes
+## Sample config NGINX Load Balancing for Kubernetes
 ![Project Image](https://nginx.org/nginx.png)
 
-In this project, we use NGINX as a load balancer to manage and distribute incoming traffic across multiple instances of our application running in a Kubernetes cluster. NGINX is a powerful, high-performance web server and reverse proxy that is widely used for load balancing.
+In this sample, we use NGINX as a load balancer to manage and distribute incoming traffic across multiple instances of our application running in a Kubernetes cluster. NGINX is a powerful, high-performance web server and reverse proxy that is widely used for load balancing.
 
 ### Why Use NGINX for Load Balancing?
 
@@ -27,11 +27,14 @@ In this project, we use NGINX as a load balancer to manage and distribute incomi
 
 ## Round Robin
 Requests are distributed evenly across the servers, with server weights taken into consideration. This method is used by default (there is no directive for enabling it):
-```
-!(https://raw.githubusercontent.com/v2d27/nginx-config/main/Round-Robin%20Load%20Balancing)
+```yaml
+![data](https://raw.githubusercontent.com/v2d27/nginx-config/main/Round-Robin%20Load%20Balancing)
 ```
 ## IP Hash
 The server to which a request is sent is determined from the client IP address. In this case, either the first three octets of the IPv4 address or the whole IPv6 address are used to calculate the hash value. The method guarantees that requests from the same address get to the same server unless it is not available.
+```
+
+```
 
 ## Least Connection
 A request is sent to the server with the least number of active connections, again with server weights taken into consideration:
