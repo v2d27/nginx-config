@@ -184,8 +184,8 @@ upstream backend {
 **Random** – Each request will be passed to a randomly selected server. If the two parameter is specified, first, NGINX randomly selects two servers taking into account server weights, and then chooses one of these servers using the specified method:
 
 - `least_conn` – The least number of active connections
-- `least_time=header` (NGINX Plus) – The least average time to receive the response header from the server ($upstream_header_time)
-- `least_time=last_byte` (NGINX Plus) – The least average time to receive the full response from the server ($upstream_response_time)
+- `least_time=header` (NGINX Plus) – The least average time to receive the response header from the server (`$upstream_header_time`)
+- `least_time=last_byte` (NGINX Plus) – The least average time to receive the full response from the server (`$upstream_response_time`)
 ```nginx
 upstream backend {
     random two least_time=last_byte;
