@@ -17,12 +17,12 @@ In this sample, we use NGINX as a load balancer to manage and distribute incomin
 4. **Scaling**: As your application scales, NGINX will automatically distribute traffic across the available instances, ensuring balanced load and improved availability.
 
 ## Table of Contents
-  **NGINX Open Source** supports four load‑balancing methods:
+* **NGINX Open Source** supports four load‑balancing methods:
   - [Round Robin](#Round Robin)
   - [IP Hash](#IP Hash)
   - [Least Connection Method](#Least Connection Method)
   - [Generic Hash](#Generic Hash)
-  And **NGINX Plus** adds two more methods:
+* And **NGINX Plus** adds two more methods:
   - [Least Response Time Method](#Least Response Time Method)
 
 ## Round Robin
@@ -145,7 +145,17 @@ server {
 ```
 
 ## Generic Hash
-The server to which a request is sent is determined from a user‑defined key which can be a text string, variable, or a combination. For example, the key may be a paired source IP address and port, or a URI as in this example:
+Generic Hash – The server to which a request is sent is determined from a user‑defined key which can be a text string, variable, or a combination. For example, the key may be a paired source IP address and port, or a URI as in this example:
+
+```
+upstream backend {
+    hash $request_uri consistent;
+    server backend1.example.com;
+    server backend2.example.com;
+}
+```
+
+The optional consistent parameter to the hash directive enables ketama consistent‑hash load balancing. Requests are evenly distributed across all upstream servers based on the user‑defined hashed key value. If an upstream server is added to or removed from an upstream group, only a few keys are remapped which minimizes cache misses in the case of load‑balancing cache servers or other applications that accumulate state.
 
 ## Least Response Time Method
 **Least Time (NGINX Plus only)** – For each request, NGINX Plus selects the server with the lowest average latency and the lowest number of active connections, where the lowest average latency is calculated based on which of the following parameters to the `least_time` directive is included:
