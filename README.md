@@ -55,7 +55,29 @@ The server to which a request is sent is determined from the client IP address. 
 ```
 
 ## Least Connection
+![leastconnection](https://github.com/v2d27/nginx-config/raw/main/images/Least-Connection.webp)
 A request is sent to the server with the least number of active connections, again with server weights taken into consideration:
+```shell
+#install nginx Least Connections Load Balancing
+upstream k8s_cluster {
+    least_conn;
+    server 192.168.1.18:31000;
+    server 192.168.1.19:31000;
+    server 192.168.1.20:31000;
+}
+server {
+    listen 80;
+    location / {
+        proxy_pass http://k8s_cluster;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    error_log /var/log/nginx/k8s_loadbalancer_error.log;
+    access_log /var/log/nginx/k8s_loadbalancer_access.log;
+}
+```
 
 ## Generic Hash
 The server to which a request is sent is determined from a user‑defined key which can be a text string, variable, or a combination. For example, the key may be a paired source IP address and port, or a URI as in this example:
