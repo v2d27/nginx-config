@@ -216,6 +216,4 @@ upstream backend {
 
 
 ## Votes
-If you find this project useful, please consider giving it a star ⭐ on [GitHub](https://github.com/v2d27/nginx-config).
-
-Your support helps me improve and continue add new features. Thank you!
+If you find this project useful, please consider giving it a star ⭐ on [GitHub](https://github.com/v2d27/nginx-config). Thank you!
