@@ -28,7 +28,7 @@ In this sample, we use NGINX as a load balancer to manage and distribute incomin
 ## Round Robin
 ![roundrobin](https://github.com/v2d27/nginx-config/raw/main/images/Round-Robin.webp)
 Requests are distributed evenly across the servers, with server weights taken into consideration. This method is used by default (there is no directive for enabling it):
-```yaml
+``` yaml
 #install nginx Round-Robin Load Balancing
 upstream k8s_cluster {
     server 192.168.1.18:31000;
