@@ -26,9 +26,27 @@ In this sample, we use NGINX as a load balancer to manage and distribute incomin
   - [Least Response Time Method](#Least Response Time Method)
 
 ## Round Robin
+![roundrobin](https://github.com/v2d27/nginx-config/raw/main/images/Round-Robin.webp)
 Requests are distributed evenly across the servers, with server weights taken into consideration. This method is used by default (there is no directive for enabling it):
 ```yaml
-![data](https://raw.githubusercontent.com/v2d27/nginx-config/main/Round-Robin%20Load%20Balancing)
+#install nginx Round-Robin Load Balancing
+upstream k8s_cluster {
+    server 192.168.1.18:31000;
+    server 192.168.1.19:31000;
+    server 192.168.1.20:31000;
+}
+server {
+    listen 80;
+    location / {
+        proxy_pass http://k8s_cluster;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+    error_log /var/log/nginx/k8s_loadbalancer_error.log;
+    access_log /var/log/nginx/k8s_loadbalancer_access.log;
+}
 ```
 ## IP Hash
 The server to which a request is sent is determined from the client IP address. In this case, either the first three octets of the IPv4 address or the whole IPv6 address are used to calculate the hash value. The method guarantees that requests from the same address get to the same server unless it is not available.
