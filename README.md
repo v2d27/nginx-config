@@ -168,9 +168,9 @@ The dynamic aspect comes from the continuous monitoring of server response times
 ![leastrespondse](https://github.com/v2d27/nginx-config/raw/main/images/Least-Response.webp)
 
 **Least Time (NGINX Plus only)** – For each request, NGINX Plus selects the server with the lowest average latency and the lowest number of active connections, where the lowest average latency is calculated based on which of the following parameters to the `least_time` directive is included:
-`header` – Time to receive the first byte from the server
-`last_byte` – Time to receive the full response from the server
-`last_byte inflight` – Time to receive the full response from the server, taking into account incomplete requests
+- `header` – Time to receive the first byte from the server
+- `last_byte` – Time to receive the full response from the server
+- `last_byte inflight` – Time to receive the full response from the server, taking into account incomplete requests
 
 ```nginx
 upstream backend {
@@ -183,9 +183,9 @@ upstream backend {
 ## Random
 **Random** – Each request will be passed to a randomly selected server. If the two parameter is specified, first, NGINX randomly selects two servers taking into account server weights, and then chooses one of these servers using the specified method:
 
-`least_conn` – The least number of active connections
-`least_time=header` (NGINX Plus) – The least average time to receive the response header from the server ($upstream_header_time)
-`least_time=last_byte` (NGINX Plus) – The least average time to receive the full response from the server ($upstream_response_time)
+- `least_conn` – The least number of active connections
+- `least_time=header` (NGINX Plus) – The least average time to receive the response header from the server ($upstream_header_time)
+- `least_time=last_byte` (NGINX Plus) – The least average time to receive the full response from the server ($upstream_response_time)
 ```nginx
 upstream backend {
     random two least_time=last_byte;
