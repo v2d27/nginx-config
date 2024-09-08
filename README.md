@@ -199,6 +199,15 @@ The Random load balancing method should be used for distributed environments whe
 
 ***Note: When configuring any method other than Round Robin, put the corresponding directive (`hash`, `ip_hash`, `least_conn`, `least_time`, or `random`) above the list of server directives in the upstream {} block.***
 
+If one of the servers needs to be *temporarily removed from the load‑balancing rotation*, it can be marked with the down parameter in order to preserve the current hashing of client IP addresses. Requests that were to be processed by this server are automatically sent to the next server in the group:
+
+```nginx
+upstream backend {
+    server backend1.example.com;
+    server backend2.example.com;
+    server backend3.example.com down; # removed from the load‑balancing rotation
+}
+```
 
 ## Source
 - [Using nginx as load balancer](https://nginx.org/en/docs/http/load_balancing.html)
