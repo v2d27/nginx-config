@@ -204,3 +204,9 @@ The Random load balancing method should be used for distributed environments whe
 - [Using nginx as load balancer](https://nginx.org/en/docs/http/load_balancing.html)
 - [Load Balancing Algorithms](https://www.geeksforgeeks.org/load-balancing-algorithms/)
 - [HTTP Load Balancing NGINX](https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/)
+
+
+## Votes
+If you find this project useful, please consider giving it a star ⭐ on [GitHub](https://github.com/v2d27/nginx-config).
+
+Your support helps me improve and continue add new features. Thank you!
