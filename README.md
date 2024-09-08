@@ -24,7 +24,7 @@ In this sample, we use NGINX as a load balancer to manage and distribute incomin
   - [Generic Hash](###Generic Hash)
 * And **NGINX Plus** adds two more methods:
   - [Least Response Time Method](#Least Response Time Method)
-  - Random 
+  - [Random](#random) 
 
 ## Round Robin
 The Round Robin algorithm is a simple static load balancing approach in which requests are distributed across the servers in a sequential or rotational manner. It is easy to implement but it doesn’t consider the load already on a server so there is a risk that one of the servers receives a lot of requests and becomes overloaded.
@@ -178,6 +178,25 @@ upstream backend {
     server backend2.example.com;
 }
 ```
+
+## Random
+**Random** – Each request will be passed to a randomly selected server. If the two parameter is specified, first, NGINX randomly selects two servers taking into account server weights, and then chooses one of these servers using the specified method:
+
+`least_conn` – The least number of active connections
+`least_time=header` (NGINX Plus) – The least average time to receive the response header from the server ($upstream_header_time)
+`least_time=last_byte` (NGINX Plus) – The least average time to receive the full response from the server ($upstream_response_time)
+```nginx
+upstream backend {
+    random two least_time=last_byte;
+    server backend1.example.com;
+    server backend2.example.com;
+    server backend3.example.com;
+    server backend4.example.com;
+}
+```
+The Random load balancing method should be used for distributed environments where multiple load balancers are passing requests to the same set of backends. For environments where the load balancer has a full view of all requests, use other load balancing methods, such as round robin, least connections and least time.
+
+***Note: When configuring any method other than Round Robin, put the corresponding directive (`hash`, `ip_hash`, `least_conn`, `least_time`, or `random`) above the list of server directives in the upstream {} block.***
 
 
 ## Source
