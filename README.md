@@ -17,13 +17,14 @@ In this sample, we use NGINX as a load balancer to manage and distribute incomin
 4. **Scaling**: As your application scales, NGINX will automatically distribute traffic across the available instances, ensuring balanced load and improved availability.
 
 ## Table of Contents
-* **NGINX Open Source** supports four load‑balancing methods:
-  - [Round Robin](###Round Robin)
-  - [IP Hash](###IP Hash)
-  - [Least Connection Method](###Least Connection Method)
-  - [Generic Hash](###Generic Hash)
+* **NGINX Open Source** supports five load‑balancing methods:
+  - [Round Robin](#Round-Robin)
+  - [Weighted Round Robin](#Weighted-Round-Robin)
+  - [IP Hash](#IP-Hash)
+  - [Least Connection](#Least-Connection)
+  - [Generic Hash](#Generic-Hash)
 * And **NGINX Plus** adds two more methods:
-  - [Least Response Time Method](#Least Response Time Method)
+  - [Least Response Time](#Least-Response-Time)
   - [Random](#random) 
 
 ## Round Robin
@@ -158,7 +159,7 @@ upstream backend {
 
 The optional consistent parameter to the hash directive enables ketama consistent‑hash load balancing. Requests are evenly distributed across all upstream servers based on the user‑defined hashed key value. If an upstream server is added to or removed from an upstream group, only a few keys are remapped which minimizes cache misses in the case of load‑balancing cache servers or other applications that accumulate state.
 
-## Least Response Time Method
+## Least Response Time
 The Least Response Time method is a dynamic load balancing approach that aims to minimize response times by directing new requests to the server with the quickest response time. 
 
 It considers the historical performance of servers to make decisions about where to route incoming requests, optimizing for faster processing.
